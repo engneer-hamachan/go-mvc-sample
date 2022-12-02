@@ -11,6 +11,39 @@ type Customer struct {
 	Age  int
 }
 
+func GetCustomer(id int) Customer {
+	db := sqlite.New()
+
+	connect, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+
+	var customer Customer
+	db.First(&customer, id)
+
+	connect.Close()
+
+	return customer
+
+}
+
+func GetCustomers() []Customer {
+	db := sqlite.New()
+
+	connect, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+
+	var customers []Customer
+	db.Find(&customers)
+
+	connect.Close()
+
+	return customers
+}
+
 func (c *Customer) Create() {
 	db := sqlite.New()
 
