@@ -10,10 +10,10 @@ func main() {
 	router.LoadHTMLGlob("view/*html")
 
 	router.GET("/", controller.Index)
-	router.GET("/:id", controller.DetailCustomer)
-	router.POST("/create", controller.CreateCustomer)
-	router.POST("/update", controller.UpdateCustomer)
-	router.POST("/delete", controller.DeleteCustomer)
+	router.GET("/customer/:id", controller.DetailCustomer)
+	router.POST("/customer/create", controller.CreateCustomer)
+	router.POST("/customer/update", controller.UpdateCustomer)
+	router.POST("/customer/delete", controller.DeleteCustomer)
 
 	router.Run(":8080")
 }
