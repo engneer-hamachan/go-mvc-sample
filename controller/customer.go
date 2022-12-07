@@ -8,14 +8,14 @@ import (
 )
 
 type customerController struct {
-  customerRepository repository.CustomerRepository
+	customerRepository repository.CustomerRepository
 }
 
-func NewCustomerController(cr repository.CustomerRepository) customerController{
-  return customerController{
-    customerRepository: cr,
-  }
-  
+func NewCustomerController(cr repository.CustomerRepository) customerController {
+	return customerController{
+		customerRepository: cr,
+	}
+
 }
 
 func (cu *customerController) Index(c *gin.Context) {

@@ -1,9 +1,9 @@
 package persistance
 
 import (
+	"gorm.io/gorm"
 	"main/domain/model"
 	"main/domain/repository"
-	"gorm.io/gorm"
 )
 
 type customerPersistance struct {
