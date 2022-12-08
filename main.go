@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	sqlite "main/config/database"
 	"main/controller"
+	"main/domain/repository"
 	"main/infrastructure/persistance"
 )
 
@@ -13,8 +14,9 @@ func main() {
 	defer connect.Close()
 
 	//DI
-	customerRepository := persistance.NewCustomerPersistance(db)
-	customerController := controller.NewCustomerController(customerRepository)
+	var customerRepository repository.CustomerRepository
+	customerPersistance := persistance.NewCustomerPersistance(db, customerRepository)
+	customerController := controller.NewCustomerController(customerPersistance)
 
 	router := gin.Default()
 	router.LoadHTMLGlob("view/*html")
