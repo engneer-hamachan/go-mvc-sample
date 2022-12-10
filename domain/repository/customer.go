@@ -5,9 +5,9 @@ import (
 )
 
 type CustomerRepository interface {
-	GetCustomer(id int) model.Customer
-	GetCustomers() []model.Customer
-	Create(c model.Customer)
-	Update(c model.Customer)
-	Delete(c model.Customer)
+	GetCustomer(id int) (result *model.Customer, err error)
+	GetCustomers() (result []model.Customer, err error)
+	Create(c model.Customer) error
+	Update(c model.Customer) error
+	Delete(c model.Customer) error
 }
