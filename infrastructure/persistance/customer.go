@@ -14,37 +14,54 @@ func NewCustomerPersistance(conn *gorm.DB, c repository.CustomerRepository) *cus
 	return &customerPersistance{Conn: conn}
 }
 
-func (cr *customerPersistance) GetCustomer(id int) model.Customer {
+func (cr *customerPersistance) GetCustomer(id int) (result *model.Customer, err error) {
 
 	var customer model.Customer
-	cr.Conn.First(&customer, id)
+	if result := cr.Conn.First(&customer, id); result.Error != nil {
+		err := result.Error
+		return nil, err
+	}
 
-	return customer
-
+	return &customer, nil
 }
 
-func (cr *customerPersistance) GetCustomers() []model.Customer {
+func (cr *customerPersistance) GetCustomers() (result []model.Customer, err error) {
 
 	var customers []model.Customer
-	cr.Conn.Find(&customers)
+	if result := cr.Conn.Find(&customers); result.Error != nil {
+		err := result.Error
+		return nil, err
+	}
 
-	return customers
+	return customers, nil
 }
 
-func (cr *customerPersistance) Create(c model.Customer) {
+func (cr *customerPersistance) Create(c model.Customer) error {
 
-	cr.Conn.Create(&c)
+	if result := cr.Conn.Create(&c); result.Error != nil {
+		err := result.Error
+		return err
+	}
 
+	return nil
 }
 
-func (cr *customerPersistance) Update(c model.Customer) {
+func (cr *customerPersistance) Update(c model.Customer) error {
 
-	cr.Conn.Save(&c)
+	if result := cr.Conn.Save(&c); result.Error != nil {
+		err := result.Error
+		return err
+	}
 
+	return nil
 }
 
-func (cr *customerPersistance) Delete(c model.Customer) {
+func (cr *customerPersistance) Delete(c model.Customer) error {
 
-	cr.Conn.Delete(&c)
+	if result := cr.Conn.Delete(&c); result.Error != nil {
+		err := result.Error
+		return err
+	}
 
+	return nil
 }
