@@ -1,16 +1,16 @@
 package usecase
 
 import (
-	"main/domain/model"
+	"main/domain/model/customer"
 	"main/domain/repository"
 )
 
 type CustomerUseCase interface {
-	GetCustomer(id int) (result *model.Customer, err error)
-	GetCustomers() (result []model.Customer, err error)
+	GetCustomer(id string) (result *customer.Customer, err error)
+	GetCustomers() (result []customer.Customer, err error)
 	CreateCustomer(name string, age int) error
-	UpdateCustomer(id int, name string, age int) error
-	DeleteCustomer(id int) error
+	UpdateCustomer(id string, name string, age int) error
+	DeleteCustomer(id string) error
 }
 
 type customerUseCase struct {
@@ -23,7 +23,7 @@ func NewCustomerUseCase(cr repository.CustomerRepository) CustomerUseCase {
 	}
 }
 
-func (cu *customerUseCase) GetCustomer(id int) (result *model.Customer, err error) {
+func (cu *customerUseCase) GetCustomer(id string) (result *customer.Customer, err error) {
 	customer, err := cu.customerRepository.GetCustomer(id)
 	if err != nil {
 		return nil, err
@@ -32,7 +32,7 @@ func (cu *customerUseCase) GetCustomer(id int) (result *model.Customer, err erro
 	return customer, nil
 }
 
-func (cu *customerUseCase) GetCustomers() (result []model.Customer, err error) {
+func (cu *customerUseCase) GetCustomers() (result []customer.Customer, err error) {
 	customers, err := cu.customerRepository.GetCustomers()
 	if err != nil {
 		return nil, err
@@ -42,8 +42,12 @@ func (cu *customerUseCase) GetCustomers() (result []model.Customer, err error) {
 }
 
 func (cu *customerUseCase) CreateCustomer(name string, age int) error {
-	customer := model.Customer{Name: name, Age: age}
-	err := cu.customerRepository.Create(customer)
+	customer, err := customer.Create(name, age)
+	if err != nil {
+		return err
+	}
+
+	err = cu.customerRepository.Create(customer)
 	if err != nil {
 		return err
 	}
@@ -51,15 +55,19 @@ func (cu *customerUseCase) CreateCustomer(name string, age int) error {
 	return nil
 }
 
-func (cu *customerUseCase) UpdateCustomer(id int, name string, age int) error {
-	customer, err := cu.customerRepository.GetCustomer(id)
+func (cu *customerUseCase) UpdateCustomer(id string, name string, age int) error {
+	current_customer, err := cu.customerRepository.GetCustomer(id)
 	if err != nil {
 		return err
 	}
 
-	customer.Name = name
-	customer.Age = age
-	err = cu.customerRepository.Update(*customer)
+	customerId := string(current_customer.GetCustomerId())
+
+	update_customer, err := customer.New(customerId, name, age)
+	if err != nil {
+		return err
+	}
+	err = cu.customerRepository.Update(update_customer)
 	if err != nil {
 		return err
 	}
@@ -67,13 +75,13 @@ func (cu *customerUseCase) UpdateCustomer(id int, name string, age int) error {
 	return nil
 }
 
-func (cu *customerUseCase) DeleteCustomer(id int) error {
+func (cu *customerUseCase) DeleteCustomer(id string) error {
 	customer, err := cu.customerRepository.GetCustomer(id)
 	if err != nil {
 		return err
 	}
 
-	err = cu.customerRepository.Delete(*customer)
+	err = cu.customerRepository.Delete(customer)
 	if err != nil {
 		return err
 	}

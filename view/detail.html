@@ -5,7 +5,7 @@
     </head>
     <body>
         <form method="POST">
-          <p>ID：{{ .customer.ID }} <input type="hidden" name="id" value="{{ .customer.ID }}" /></p>
+          <p>ID：{{ .customer.CustomerId }} <input type="hidden" name="id" value="{{ .customer.CustomerId }}" /></p>
           <p>名前： <input type="text" name="name" value="{{ .customer.Name }}" /></p>
           <p>年齢： <input type="text" name="age" value="{{ .customer.Age }}" /></p>
           <input type="submit" formaction="/customer/update" value="更新" /> 
