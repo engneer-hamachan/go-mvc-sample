@@ -16,7 +16,7 @@ type name string
 type age int
 
 func New(customerId string, name string, age int) (*Customer, error) {
-	createdCustomerId, err := NewCustomerId(customerId)
+	createdCustomerId, err := newCustomerId(customerId)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (c Customer) GetAge() int {
 }
 
 // value constructors
-func NewCustomerId(value string) (*customerId, error) {
+func newCustomerId(value string) (*customerId, error) {
 	if value == "" {
 		err := fmt.Errorf("%s", "empty arg:customerId NewCustomerId()")
 		return nil, err
