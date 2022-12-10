@@ -3,25 +3,24 @@ package controller
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"main/domain/model"
-	"main/domain/repository"
+	"main/usecase"
 	"strconv"
 )
 
 type customerController struct {
-	customerRepository repository.CustomerRepository
+	customerUseCase usecase.CustomerUseCase
 }
 
-func NewCustomerController(cr repository.CustomerRepository) customerController {
+func NewCustomerController(cu usecase.CustomerUseCase) customerController {
 	return customerController{
-		customerRepository: cr,
+		customerUseCase: cu,
 	}
 
 }
 
-func (cu *customerController) Index(c *gin.Context) {
+func (cc *customerController) Index(c *gin.Context) {
 
-	customers, err := cu.customerRepository.GetCustomers()
+	customers, err := cc.customerUseCase.GetCustomers()
 	if err != nil {
 		fmt.Println(err)
 		c.HTML(500, "500.html", gin.H{"error": err.Error()})
@@ -31,7 +30,7 @@ func (cu *customerController) Index(c *gin.Context) {
 	c.HTML(200, "index.html", gin.H{"customers": customers})
 }
 
-func (cu *customerController) DetailCustomer(c *gin.Context) {
+func (cc *customerController) DetailCustomer(c *gin.Context) {
 
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -40,7 +39,7 @@ func (cu *customerController) DetailCustomer(c *gin.Context) {
 		return
 	}
 
-	customer, err := cu.customerRepository.GetCustomer(id)
+	customer, err := cc.customerUseCase.GetCustomer(id)
 	if err != nil {
 		fmt.Println(err)
 		c.HTML(500, "500.html", gin.H{"error": err.Error()})
@@ -50,7 +49,7 @@ func (cu *customerController) DetailCustomer(c *gin.Context) {
 	c.HTML(200, "detail.html", gin.H{"customer": *customer})
 }
 
-func (cu *customerController) CreateCustomer(c *gin.Context) {
+func (cc *customerController) CreateCustomer(c *gin.Context) {
 	type RequestDataField struct {
 		Name string `form:"name" binding:"required"`
 		Age  string `form:"age" binding:"required"`
@@ -72,8 +71,7 @@ func (cu *customerController) CreateCustomer(c *gin.Context) {
 		return
 	}
 
-	customer := model.Customer{Name: name, Age: age}
-	err = cu.customerRepository.Create(customer)
+	err = cc.customerUseCase.CreateCustomer(name, age)
 	if err != nil {
 		fmt.Println(err)
 		c.HTML(500, "500.html", gin.H{"error": err.Error()})
@@ -83,7 +81,7 @@ func (cu *customerController) CreateCustomer(c *gin.Context) {
 	c.Redirect(301, "/")
 }
 
-func (cu *customerController) UpdateCustomer(c *gin.Context) {
+func (cc *customerController) UpdateCustomer(c *gin.Context) {
 
 	type RequestDataField struct {
 		ID   string `form:"id" binding:"required"`
@@ -108,16 +106,7 @@ func (cu *customerController) UpdateCustomer(c *gin.Context) {
 
 	name := form.Name
 
-	customer, err := cu.customerRepository.GetCustomer(id)
-	if err != nil {
-		fmt.Println(err)
-		c.HTML(500, "500.html", gin.H{"error": err.Error()})
-		return
-	}
-
-	customer.Name = name
-	customer.Age = age
-	err = cu.customerRepository.Update(*customer)
+	err = cc.customerUseCase.UpdateCustomer(id, name, age)
 	if err != nil {
 		fmt.Println(err)
 		c.HTML(500, "500.html", gin.H{"error": err.Error()})
@@ -127,7 +116,7 @@ func (cu *customerController) UpdateCustomer(c *gin.Context) {
 	c.Redirect(301, "/")
 }
 
-func (cu *customerController) DeleteCustomer(c *gin.Context) {
+func (cc *customerController) DeleteCustomer(c *gin.Context) {
 	type RequestDataField struct {
 		ID string `form:"id" binding:"required"`
 	}
@@ -147,14 +136,7 @@ func (cu *customerController) DeleteCustomer(c *gin.Context) {
 		return
 	}
 
-	customer, err := cu.customerRepository.GetCustomer(id)
-	if err != nil {
-		fmt.Println(err)
-		c.HTML(500, "500.html", gin.H{"error": err.Error()})
-		return
-	}
-
-	err = cu.customerRepository.Delete(*customer)
+	err = cc.customerUseCase.DeleteCustomer(id)
 	if err != nil {
 		fmt.Println(err)
 		c.HTML(500, "500.html", gin.H{"error": err.Error()})

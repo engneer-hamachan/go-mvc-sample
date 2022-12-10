@@ -6,6 +6,7 @@ import (
 	"main/controller"
 	"main/domain/repository"
 	"main/infrastructure/persistance"
+	"main/usecase"
 )
 
 func main() {
@@ -16,7 +17,8 @@ func main() {
 	//DI
 	var customerRepository repository.CustomerRepository
 	customerPersistance := persistance.NewCustomerPersistance(db, customerRepository)
-	customerController := controller.NewCustomerController(customerPersistance)
+	customerUseCase := usecase.NewCustomerUseCase(customerPersistance)
+	customerController := controller.NewCustomerController(customerUseCase)
 
 	router := gin.Default()
 	router.LoadHTMLGlob("view/*html")
