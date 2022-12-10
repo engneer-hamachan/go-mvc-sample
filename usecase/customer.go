@@ -61,7 +61,7 @@ func (cu *customerUseCase) UpdateCustomer(id string, name string, age int) error
 		return err
 	}
 
-	customerId := string(current_customer.GetCustomerId())
+	customerId := current_customer.GetCustomerId()
 
 	update_customer, err := customer.New(customerId, name, age)
 	if err != nil {

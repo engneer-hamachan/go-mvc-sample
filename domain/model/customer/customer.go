@@ -53,16 +53,16 @@ func Create(name string, age int) (*Customer, error) {
 }
 
 // Getter
-func (c Customer) GetCustomerId() customerId {
-	return c.customerId
+func (c Customer) GetCustomerId() string {
+	return string(c.customerId)
 }
 
-func (c Customer) GetName() name {
-	return c.name
+func (c Customer) GetName() string {
+	return string(c.name)
 }
 
-func (c Customer) GetAge() age {
-	return c.age
+func (c Customer) GetAge() int {
+	return int(c.age)
 }
 
 // value constructors

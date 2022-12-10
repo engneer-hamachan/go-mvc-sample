@@ -15,11 +15,11 @@ type Customer struct {
 	DeletedAt  time.Time
 }
 
-func ConvertCustomer(c *customer.Customer) *Customer {
+func ConvertCustomer(customer *customer.Customer) *Customer {
 	return &Customer{
-		CustomerId: string(c.GetCustomerId()),
-		Name:       string(c.GetName()),
-		Age:        int(c.GetAge()),
+		CustomerId: customer.GetCustomerId(),
+		Name:       customer.GetName(),
+		Age:        customer.GetAge(),
 	}
 }
 

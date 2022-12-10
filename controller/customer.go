@@ -35,9 +35,9 @@ func (cc *customerController) Index(c *gin.Context) {
 
 	var data []ResultDataField
 	for _, customer := range customers {
-		customerId := string(customer.GetCustomerId())
-		name := string(customer.GetName())
-		age := int(customer.GetAge())
+		customerId := customer.GetCustomerId()
+		name := customer.GetName()
+		age := customer.GetAge()
 		data = append(data, ResultDataField{CustomerId: customerId, Name: name, Age: age})
 	}
 
@@ -60,7 +60,11 @@ func (cc *customerController) DetailCustomer(c *gin.Context) {
 		Age        int
 	}
 
-	data := ResultDataField{CustomerId: string(customer.GetCustomerId()), Name: string(customer.GetName()), Age: int(customer.GetAge())}
+	data := ResultDataField{
+		CustomerId: customer.GetCustomerId(),
+		Name:       customer.GetName(),
+		Age:        customer.GetAge(),
+	}
 
 	c.HTML(200, "detail.html", gin.H{"customer": data})
 }

@@ -61,7 +61,8 @@ func (cp *customerPersistance) Create(c *customer.Customer) error {
 func (cp *customerPersistance) Update(c *customer.Customer) error {
 	converted_customer := dto.ConvertCustomer(c)
 
-	if result := cp.Conn.Save(converted_customer); result.Error != nil {
+	if result := cp.Conn.Where("customer_id = ?", converted_customer.CustomerId).
+		Updates(converted_customer); result.Error != nil {
 		err := result.Error
 		return err
 	}
@@ -72,7 +73,8 @@ func (cp *customerPersistance) Update(c *customer.Customer) error {
 func (cp *customerPersistance) Delete(c *customer.Customer) error {
 	converted_customer := dto.ConvertCustomer(c)
 
-	if result := cp.Conn.Where("customer_id = ?", converted_customer.CustomerId).Delete(converted_customer); result.Error != nil {
+	if result := cp.Conn.Where("customer_id = ?", converted_customer.CustomerId).
+		Delete(converted_customer); result.Error != nil {
 		err := result.Error
 		return err
 	}
