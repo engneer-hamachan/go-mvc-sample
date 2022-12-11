@@ -12,7 +12,7 @@ func IsLogin() gin.HandlerFunc {
 		customerId := session.Get("CustomerId")
 
 		if customerId == nil {
-			c.Status(401)
+			c.HTML(401, "login.html", gin.H{})
 			c.Abort()
 		} else {
 			c.Set("CustomerId", customerId)

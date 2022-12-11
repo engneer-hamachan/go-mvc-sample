@@ -58,7 +58,7 @@ func (cc *customerController) AuthLogin(c *gin.Context) {
 	err = bcrypt.CompareHashAndPassword([]byte(customer.GetPassword()), []byte(password))
 	if err != nil {
 		fmt.Println(err.Error())
-		c.Status(401)
+		c.HTML(401, "login.html", gin.H{})
 		return
 	}
 
