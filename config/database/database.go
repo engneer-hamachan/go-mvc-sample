@@ -10,6 +10,8 @@ type Customer struct {
 	CustomerId string
 	Name       string
 	Age        int
+	Email      string
+	Password   string
 }
 
 func New() *gorm.DB {

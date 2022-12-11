@@ -15,6 +15,22 @@ func NewCustomerPersistance(conn *gorm.DB) repository.CustomerRepository {
 	return &customerPersistance{Conn: conn}
 }
 
+func (cp *customerPersistance) GetCustomerByEmail(email string) (result *customer.Customer, err error) {
+
+	var customer dto.Customer
+	if result := cp.Conn.Where("email = ?", email).First(&customer); result.Error != nil {
+		err := result.Error
+		return nil, err
+	}
+
+	result_customer, err := dto.AdaptCustomer(&customer)
+	if err != nil {
+		return nil, err
+	}
+
+	return result_customer, nil
+}
+
 func (cp *customerPersistance) GetCustomer(id string) (result *customer.Customer, err error) {
 
 	var customer dto.Customer

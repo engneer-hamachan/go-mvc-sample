@@ -8,6 +8,8 @@
           <p>ID：{{ .customer.CustomerId }} <input type="hidden" name="id" value="{{ .customer.CustomerId }}" /></p>
           <p>名前： <input type="text" name="name" value="{{ .customer.Name }}" /></p>
           <p>年齢： <input type="text" name="age" value="{{ .customer.Age }}" /></p>
+          <p>Email： <input type="text" name="email" value="{{ .customer.Email }}" /></p>
+          <p>Password： <input type="text" name="password" value="" /></p>
           <input type="submit" formaction="/customer/update" value="更新" /> 
           <input type="submit" formaction="/customer/delete" value="削除" /> 
         </form>

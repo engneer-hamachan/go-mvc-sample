@@ -9,9 +9,11 @@ type Customer struct {
 	customerId vo.UuId
 	name       vo.PersonName
 	age        vo.Age
+	email      vo.Email
+	password   vo.Password
 }
 
-func New(customerId string, name string, age int) (*Customer, error) {
+func New(customerId string, name string, age int, email string, password string) (*Customer, error) {
 	createdCustomerId, err := vo.NewUuId(customerId)
 	if err != nil {
 		return nil, err
@@ -27,19 +29,31 @@ func New(customerId string, name string, age int) (*Customer, error) {
 		return nil, err
 	}
 
+	createdEmail, err := vo.NewEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	createdPassword, err := vo.NewPassword(password)
+	if err != nil {
+		return nil, err
+	}
+
 	customer := Customer{
 		customerId: *createdCustomerId,
 		name:       *createdName,
 		age:        *createdAge,
+		email:      *createdEmail,
+		password:   *createdPassword,
 	}
 
 	return &customer, nil
 }
 
 // Create Constructor
-func Create(name string, age int) (*Customer, error) {
+func Create(name string, age int, email string, password string) (*Customer, error) {
 	customerId := uuid.New().String()
-	customer, err := New(customerId, name, age)
+	customer, err := New(customerId, name, age, email, password)
 
 	if err != nil {
 		return nil, err
@@ -59,4 +73,12 @@ func (c Customer) GetName() string {
 
 func (c Customer) GetAge() int {
 	return int(c.age)
+}
+
+func (c Customer) GetEmail() string {
+	return string(c.email)
+}
+
+func (c Customer) GetPassword() string {
+	return string(c.password)
 }
