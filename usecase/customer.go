@@ -7,7 +7,7 @@ import (
 
 type CustomerUseCase interface {
 	GetCustomer(id string) (result *customer.Customer, err error)
-	GetCustomers() (result []customer.Customer, err error)
+	GetCustomers() (result []*customer.Customer, err error)
 	CreateCustomer(name string, age int) error
 	UpdateCustomer(id string, name string, age int) error
 	DeleteCustomer(id string) error
@@ -32,7 +32,7 @@ func (cu *customerUseCase) GetCustomer(id string) (result *customer.Customer, er
 	return customer, nil
 }
 
-func (cu *customerUseCase) GetCustomers() (result []customer.Customer, err error) {
+func (cu *customerUseCase) GetCustomers() (result []*customer.Customer, err error) {
 	customers, err := cu.customerRepository.GetCustomers()
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (cu *customerUseCase) CreateCustomer(name string, age int) error {
 		return err
 	}
 
-	err = cu.customerRepository.Create(customer)
+	err = cu.customerRepository.InsertCustomer(customer)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (cu *customerUseCase) UpdateCustomer(id string, name string, age int) error
 	if err != nil {
 		return err
 	}
-	err = cu.customerRepository.Update(update_customer)
+	err = cu.customerRepository.UpdateCustomer(update_customer)
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func (cu *customerUseCase) DeleteCustomer(id string) error {
 		return err
 	}
 
-	err = cu.customerRepository.Delete(customer)
+	err = cu.customerRepository.DeleteCustomer(customer)
 	if err != nil {
 		return err
 	}

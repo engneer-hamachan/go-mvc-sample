@@ -37,8 +37,8 @@ func AdaptCustomer(converted_customer *Customer) (*customer.Customer, error) {
 	return customer, nil
 }
 
-func AdaptCustomers(converted_customers []*Customer) ([]customer.Customer, error) {
-	var customers []customer.Customer
+func AdaptCustomers(converted_customers []*Customer) ([]*customer.Customer, error) {
+	var customers []*customer.Customer
 
 	for _, converted_customer := range converted_customers {
 		customer, err := customer.New(
@@ -50,7 +50,7 @@ func AdaptCustomers(converted_customers []*Customer) ([]customer.Customer, error
 		if err != nil {
 			return nil, err
 		}
-		customers = append(customers, *customer)
+		customers = append(customers, customer)
 	}
 
 	return customers, nil

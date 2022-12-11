@@ -6,8 +6,8 @@ import (
 
 type CustomerRepository interface {
 	GetCustomer(id string) (result *customer.Customer, err error)
-	GetCustomers() (result []customer.Customer, err error)
-	Create(c *customer.Customer) error
-	Update(c *customer.Customer) error
-	Delete(c *customer.Customer) error
+	GetCustomers() (result []*customer.Customer, err error)
+	InsertCustomer(c *customer.Customer) error
+	UpdateCustomer(c *customer.Customer) error
+	DeleteCustomer(c *customer.Customer) error
 }

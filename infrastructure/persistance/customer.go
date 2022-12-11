@@ -31,7 +31,7 @@ func (cp *customerPersistance) GetCustomer(id string) (result *customer.Customer
 	return result_customer, nil
 }
 
-func (cp *customerPersistance) GetCustomers() (result []customer.Customer, err error) {
+func (cp *customerPersistance) GetCustomers() (result []*customer.Customer, err error) {
 
 	var customers []*dto.Customer
 	if result := cp.Conn.Find(&customers); result.Error != nil {
@@ -47,7 +47,7 @@ func (cp *customerPersistance) GetCustomers() (result []customer.Customer, err e
 	return result_customers, nil
 }
 
-func (cp *customerPersistance) Create(c *customer.Customer) error {
+func (cp *customerPersistance) InsertCustomer(c *customer.Customer) error {
 	converted_customer := dto.ConvertCustomer(c)
 
 	if result := cp.Conn.Create(converted_customer); result.Error != nil {
@@ -58,7 +58,7 @@ func (cp *customerPersistance) Create(c *customer.Customer) error {
 	return nil
 }
 
-func (cp *customerPersistance) Update(c *customer.Customer) error {
+func (cp *customerPersistance) UpdateCustomer(c *customer.Customer) error {
 	converted_customer := dto.ConvertCustomer(c)
 
 	if result := cp.Conn.Where("customer_id = ?", converted_customer.CustomerId).
@@ -70,7 +70,7 @@ func (cp *customerPersistance) Update(c *customer.Customer) error {
 	return nil
 }
 
-func (cp *customerPersistance) Delete(c *customer.Customer) error {
+func (cp *customerPersistance) DeleteCustomer(c *customer.Customer) error {
 	converted_customer := dto.ConvertCustomer(c)
 
 	if result := cp.Conn.Where("customer_id = ?", converted_customer.CustomerId).
