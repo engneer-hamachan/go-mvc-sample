@@ -7,8 +7,9 @@ import (
 
 type Customer struct {
 	gorm.Model
-	Name string
-	Age  int
+	CustomerId string
+	Name       string
+	Age        int
 }
 
 func New() *gorm.DB {

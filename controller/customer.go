@@ -27,18 +27,26 @@ func (cc *customerController) Index(c *gin.Context) {
 		return
 	}
 
-	c.HTML(200, "index.html", gin.H{"customers": customers})
+	type ResultDataField struct {
+		CustomerId string
+		Name       string
+		Age        int
+	}
+
+	var data []ResultDataField
+	for _, customer := range customers {
+		customerId := customer.GetCustomerId()
+		name := customer.GetName()
+		age := customer.GetAge()
+		data = append(data, ResultDataField{CustomerId: customerId, Name: name, Age: age})
+	}
+
+	c.HTML(200, "index.html", gin.H{"customers": data})
 }
 
 func (cc *customerController) DetailCustomer(c *gin.Context) {
 
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		fmt.Println(err)
-		c.HTML(400, "400.html", gin.H{"error": err.Error()})
-		return
-	}
-
+	id := c.Param("id")
 	customer, err := cc.customerUseCase.GetCustomer(id)
 	if err != nil {
 		fmt.Println(err)
@@ -46,7 +54,19 @@ func (cc *customerController) DetailCustomer(c *gin.Context) {
 		return
 	}
 
-	c.HTML(200, "detail.html", gin.H{"customer": *customer})
+	type ResultDataField struct {
+		CustomerId string
+		Name       string
+		Age        int
+	}
+
+	data := ResultDataField{
+		CustomerId: customer.GetCustomerId(),
+		Name:       customer.GetName(),
+		Age:        customer.GetAge(),
+	}
+
+	c.HTML(200, "detail.html", gin.H{"customer": data})
 }
 
 func (cc *customerController) CreateCustomer(c *gin.Context) {
@@ -97,14 +117,14 @@ func (cc *customerController) UpdateCustomer(c *gin.Context) {
 		return
 	}
 
-	id, err := strconv.Atoi(form.ID)
+	id := form.ID
+	name := form.Name
+
 	age, err := strconv.Atoi(form.Age)
 	if err != nil {
 		c.HTML(400, "400.html", gin.H{"error": err.Error()})
 		return
 	}
-
-	name := form.Name
 
 	err = cc.customerUseCase.UpdateCustomer(id, name, age)
 	if err != nil {
@@ -129,14 +149,9 @@ func (cc *customerController) DeleteCustomer(c *gin.Context) {
 		return
 	}
 
-	id, err := strconv.Atoi(form.ID)
-	if err != nil {
-		fmt.Println(err)
-		c.HTML(400, "400.html", gin.H{"error": err.Error()})
-		return
-	}
+	id := form.ID
 
-	err = cc.customerUseCase.DeleteCustomer(id)
+	err := cc.customerUseCase.DeleteCustomer(id)
 	if err != nil {
 		fmt.Println(err)
 		c.HTML(500, "500.html", gin.H{"error": err.Error()})

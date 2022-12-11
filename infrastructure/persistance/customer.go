@@ -2,43 +2,55 @@ package persistance
 
 import (
 	"gorm.io/gorm"
-	"main/domain/model"
+	"main/domain/model/customer"
 	"main/domain/repository"
+	"main/infrastructure/dto"
 )
 
 type customerPersistance struct {
 	Conn *gorm.DB
 }
 
-func NewCustomerPersistance(conn *gorm.DB, c repository.CustomerRepository) *customerPersistance {
+func NewCustomerPersistance(conn *gorm.DB) repository.CustomerRepository {
 	return &customerPersistance{Conn: conn}
 }
 
-func (cr *customerPersistance) GetCustomer(id int) (result *model.Customer, err error) {
+func (cp *customerPersistance) GetCustomer(id string) (result *customer.Customer, err error) {
 
-	var customer model.Customer
-	if result := cr.Conn.First(&customer, id); result.Error != nil {
+	var customer dto.Customer
+	if result := cp.Conn.Where("customer_id = ?", id).First(&customer); result.Error != nil {
 		err := result.Error
 		return nil, err
 	}
 
-	return &customer, nil
+	result_customer, err := dto.AdaptCustomer(&customer)
+	if err != nil {
+		return nil, err
+	}
+
+	return result_customer, nil
 }
 
-func (cr *customerPersistance) GetCustomers() (result []model.Customer, err error) {
+func (cp *customerPersistance) GetCustomers() (result []*customer.Customer, err error) {
 
-	var customers []model.Customer
-	if result := cr.Conn.Find(&customers); result.Error != nil {
+	var customers []*dto.Customer
+	if result := cp.Conn.Find(&customers); result.Error != nil {
 		err := result.Error
 		return nil, err
 	}
 
-	return customers, nil
+	result_customers, err := dto.AdaptCustomers(customers)
+	if err != nil {
+		return nil, err
+	}
+
+	return result_customers, nil
 }
 
-func (cr *customerPersistance) Create(c model.Customer) error {
+func (cp *customerPersistance) InsertCustomer(c *customer.Customer) error {
+	converted_customer := dto.ConvertCustomer(c)
 
-	if result := cr.Conn.Create(&c); result.Error != nil {
+	if result := cp.Conn.Create(converted_customer); result.Error != nil {
 		err := result.Error
 		return err
 	}
@@ -46,9 +58,11 @@ func (cr *customerPersistance) Create(c model.Customer) error {
 	return nil
 }
 
-func (cr *customerPersistance) Update(c model.Customer) error {
+func (cp *customerPersistance) UpdateCustomer(c *customer.Customer) error {
+	converted_customer := dto.ConvertCustomer(c)
 
-	if result := cr.Conn.Save(&c); result.Error != nil {
+	if result := cp.Conn.Where("customer_id = ?", converted_customer.CustomerId).
+		Updates(converted_customer); result.Error != nil {
 		err := result.Error
 		return err
 	}
@@ -56,9 +70,11 @@ func (cr *customerPersistance) Update(c model.Customer) error {
 	return nil
 }
 
-func (cr *customerPersistance) Delete(c model.Customer) error {
+func (cp *customerPersistance) DeleteCustomer(c *customer.Customer) error {
+	converted_customer := dto.ConvertCustomer(c)
 
-	if result := cr.Conn.Delete(&c); result.Error != nil {
+	if result := cp.Conn.Where("customer_id = ?", converted_customer.CustomerId).
+		Delete(converted_customer); result.Error != nil {
 		err := result.Error
 		return err
 	}
