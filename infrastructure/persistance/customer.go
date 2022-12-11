@@ -11,7 +11,7 @@ type customerPersistance struct {
 	Conn *gorm.DB
 }
 
-func NewCustomerPersistance(conn *gorm.DB, c repository.CustomerRepository) *customerPersistance {
+func NewCustomerPersistance(conn *gorm.DB) repository.CustomerRepository {
 	return &customerPersistance{Conn: conn}
 }
 
