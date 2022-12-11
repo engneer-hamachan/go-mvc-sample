@@ -6,10 +6,11 @@ import (
 )
 
 type CustomerUseCase interface {
+	GetCustomerForAuth(email string) (result *customer.Customer, err error)
 	GetCustomer(id string) (result *customer.Customer, err error)
 	GetCustomers() (result []*customer.Customer, err error)
-	CreateCustomer(name string, age int) error
-	UpdateCustomer(id string, name string, age int) error
+	CreateCustomer(name string, age int, email string, password string) error
+	UpdateCustomer(id string, name string, age int, email string, password string) error
 	DeleteCustomer(id string) error
 }
 
@@ -32,6 +33,15 @@ func (cu *customerUseCase) GetCustomer(id string) (result *customer.Customer, er
 	return customer, nil
 }
 
+func (cu *customerUseCase) GetCustomerForAuth(email string) (result *customer.Customer, err error) {
+	current_customer, err := cu.customerRepository.GetCustomerByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
+	return current_customer, nil
+}
+
 func (cu *customerUseCase) GetCustomers() (result []*customer.Customer, err error) {
 	customers, err := cu.customerRepository.GetCustomers()
 	if err != nil {
@@ -41,8 +51,8 @@ func (cu *customerUseCase) GetCustomers() (result []*customer.Customer, err erro
 	return customers, nil
 }
 
-func (cu *customerUseCase) CreateCustomer(name string, age int) error {
-	customer, err := customer.Create(name, age)
+func (cu *customerUseCase) CreateCustomer(name string, age int, email string, password string) error {
+	customer, err := customer.Create(name, age, email, password)
 	if err != nil {
 		return err
 	}
@@ -55,7 +65,7 @@ func (cu *customerUseCase) CreateCustomer(name string, age int) error {
 	return nil
 }
 
-func (cu *customerUseCase) UpdateCustomer(id string, name string, age int) error {
+func (cu *customerUseCase) UpdateCustomer(id string, name string, age int, email string, password string) error {
 	current_customer, err := cu.customerRepository.GetCustomer(id)
 	if err != nil {
 		return err
@@ -63,7 +73,7 @@ func (cu *customerUseCase) UpdateCustomer(id string, name string, age int) error
 
 	customerId := current_customer.GetCustomerId()
 
-	update_customer, err := customer.New(customerId, name, age)
+	update_customer, err := customer.New(customerId, name, age, email, password)
 	if err != nil {
 		return err
 	}

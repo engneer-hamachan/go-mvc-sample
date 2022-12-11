@@ -10,6 +10,8 @@ type Customer struct {
 	CustomerId string
 	Name       string
 	Age        int
+	Email      string
+	Password   string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 	DeletedAt  time.Time
@@ -20,6 +22,8 @@ func ConvertCustomer(customer *customer.Customer) *Customer {
 		CustomerId: customer.GetCustomerId(),
 		Name:       customer.GetName(),
 		Age:        customer.GetAge(),
+		Email:      customer.GetEmail(),
+		Password:   customer.GetPassword(),
 	}
 }
 
@@ -28,6 +32,8 @@ func AdaptCustomer(converted_customer *Customer) (*customer.Customer, error) {
 		converted_customer.CustomerId,
 		converted_customer.Name,
 		converted_customer.Age,
+		converted_customer.Email,
+		converted_customer.Password,
 	)
 
 	if err != nil {
@@ -45,6 +51,8 @@ func AdaptCustomers(converted_customers []*Customer) ([]*customer.Customer, erro
 			converted_customer.CustomerId,
 			converted_customer.Name,
 			converted_customer.Age,
+			converted_customer.Email,
+			converted_customer.Password,
 		)
 
 		if err != nil {
