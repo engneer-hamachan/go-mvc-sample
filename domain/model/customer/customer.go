@@ -1,32 +1,28 @@
 package customer
 
 import (
-	"fmt"
 	"github.com/google/uuid"
+	"main/domain/model/vo"
 )
 
 type Customer struct {
-	customerId customerId
-	name       name
-	age        age
+	customerId vo.UuId
+	name       vo.PersonName
+	age        vo.Age
 }
 
-type customerId string
-type name string
-type age int
-
 func New(customerId string, name string, age int) (*Customer, error) {
-	createdCustomerId, err := newCustomerId(customerId)
+	createdCustomerId, err := vo.NewUuId(customerId)
 	if err != nil {
 		return nil, err
 	}
 
-	createdName, err := newName(name)
+	createdName, err := vo.NewName(name)
 	if err != nil {
 		return nil, err
 	}
 
-	createdAge, err := newAge(age)
+	createdAge, err := vo.NewAge(age)
 	if err != nil {
 		return nil, err
 	}
@@ -63,38 +59,4 @@ func (c Customer) GetName() string {
 
 func (c Customer) GetAge() int {
 	return int(c.age)
-}
-
-// value constructors
-func newCustomerId(value string) (*customerId, error) {
-	if value == "" {
-		err := fmt.Errorf("%s", "empty arg:customerId NewCustomerId()")
-		return nil, err
-	}
-
-	customerId := customerId(value)
-
-	return &customerId, nil
-}
-
-func newName(value string) (*name, error) {
-	if value == "" {
-		err := fmt.Errorf("%s", "empty arg:name newName()")
-		return nil, err
-	}
-
-	name := name(value)
-
-	return &name, nil
-}
-
-func newAge(value int) (*age, error) {
-	if value >= 100 {
-		err := fmt.Errorf("%s", "invalid age arg:age newAge()")
-		return nil, err
-	}
-
-	age := age(value)
-
-	return &age, nil
 }
